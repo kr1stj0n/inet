@@ -24,7 +24,7 @@
 #include "AlgorithmicDropperBase.h"
 
 /**
- * Implementation of Random Early Detection (RED).
+ * Implementation of Random Early Detection Shadow Queue (RED ShQ).
  */
 class REDDropperShQ : public AlgorithmicDropperBase
 {
@@ -38,6 +38,7 @@ class REDDropperShQ : public AlgorithmicDropperBase
     double *pkrates;
     double *count;
     double *marks;
+/* new members */
     double recStart;
     double alpha;
     double interval;
@@ -63,7 +64,9 @@ class REDDropperShQ : public AlgorithmicDropperBase
     simsignal_t avgOutputRateSignal;
 
   public:
-    REDDropperShQ() : wq(0), minths(NULL), maxths(NULL), maxps(NULL), avg(0.0), p(0.01), curRate(0.0), avgRate(0.0) {marked = markedSID = markedNotSID = NULL;}
+    REDDropperShQ() : wq(0), minths(NULL), maxths(NULL), maxps(NULL), avg(0.0),
+                      p(0.01), curRate(0.0), avgRate(0.0)
+        {marked = markedSID = markedNotSID = NULL;}
 
     void markECN(cPacket *packet);
     bool isMarkedECN(cPacket *packet);

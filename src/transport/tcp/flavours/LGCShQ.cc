@@ -19,7 +19,6 @@
 #include <algorithm>   // min,max
 #include "LGCShQ.h"
 #include "TCP.h"
-//#include "math.h"
 
 
 Register_Class(LGCShQ);
@@ -233,9 +232,6 @@ void LGCShQ::processPaceTimer(TCPEventCode& event)
     if(state->snd_cwnd >= (state->snd_nxt - state->snd_una) + 2 * state->snd_mss)
         state->snd_cwnd = state->snd_mss + (state->snd_nxt - state->snd_una);
 
-//    if(state->snd_cwnd < (state->snd_nxt - state->snd_una) + 1 * state->snd_mss)
-//            state->snd_cwnd = state->snd_mss + (state->snd_nxt - state->snd_una);
-
     sendData(false);
 
     state->snd_cwnd = cwnd;
@@ -263,10 +259,10 @@ void LGCShQ::receivedDataAck(uint32 firstSeqAcked)
         state->dctcp_total++;
         if(state->ece) {
             state->dctcp_marked++;
-            if(simTime() >= conn->tcpMain->par("param3"))
+            if (simTime() >= conn->tcpMain->par("param3"))
                 markingProb->record(1);
         } else {
-            if(simTime() >= conn->tcpMain->par("param3"))
+            if (simTime() >= conn->tcpMain->par("param3"))
                 markingProb->record(0);
         }
 

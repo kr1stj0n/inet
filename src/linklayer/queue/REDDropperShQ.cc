@@ -113,7 +113,7 @@ void REDDropperShQ::markECN(cPacket *packet)
 {
 
     if (isMarkedECN(packet)) {
-//        if(getLength() > 0)
+        //if(getLength() > 0)
             markNext = true;
         return;
     }
@@ -137,36 +137,14 @@ bool REDDropperShQ::shouldDrop(cPacket *packet)
 {
     const int i = packet->getArrivalGate()->getIndex();
     ASSERT(i >= 0 && i < numGates);
-    const double minth = minths[i];
-    const double maxth = maxths[i];
-    const double maxp = maxps[i];
     const double pkrate = pkrates[i] * 1500;
     const double mark = marks[i];
-    const int queueLength = getLength();
 
-    if (queueLength > 0)
-    {
-        // TD: This following calculation is only useful when the queue is not empty!
-        avg = (1 - wq) * avg + wq * queueLength;
-
-    }
-    else
-    {
-        // TD: Added behaviour for empty queue.
-        const double m = SIMTIME_DBL(simTime() - q_time) * pkrate;
-        avg = pow(1 - wq, m) * avg;
-    }
     curRate += packet->getByteLength();
-//    curRate++;
     double ct = SIMTIME_DBL(simTime());
+
     if(ct >= SIMTIME_DBL(r_time) + interval) {
         double duration = (ct - SIMTIME_DBL(r_time));
-//        int d = SIMTIME_DBL(ct - r_time) / interval;
-//        if(d >= 1) {
-//            avgRate = (1 - alpha) * avgRate + alpha * curRate;
-//            avgRate = pow(1 - alpha, d - 1) * avgRate;
-//        }
-//        r_time += (double)d / 100;
         double ql = getLength();
 
         curRate += ql * 1500;
@@ -174,7 +152,6 @@ bool REDDropperShQ::shouldDrop(cPacket *packet)
         avgRate = (1 - alpha) * avgRate + alpha * curRate;
 
         p = maxPercent - ((pkrate * duration - avgRate) / (pkrate * duration)) * maxPercent;
-//                p + beta * (avgRate - pkrate * (ct - SIMTIME_DBL(r_time)));
 
         if(p < 0)
             p = 0;
@@ -186,70 +163,20 @@ bool REDDropperShQ::shouldDrop(cPacket *packet)
 
         r_time = simTime();
         curRate = 0;
-
     }
-
-//    double pb = 0;
-//
-//    if ((maxth - minth) / 2 <= avg && avg < maxth) {
-//        pb = (avg - (maxth - minth) / 2) / ((maxth - minth) / 2);
-//
-//    } else if (avg >= maxth) {
-//        pb = 1;
-//
-//    } else if ((maxth - minth) / 2 > avg && avg >= minth) {
-//        pb = - ((maxth - minth) / 2 - avg) / ((maxth - minth) / 2);
-//
-//    } else if (avg < minth) {
-//        pb = -1;
-//
-//    }
-//
-//    p = p - alpha * pb * ( std::log(1 - p)  / std::log(phi) );
-//    if(p < 0.0001)
-//        p = 0.0001;
-//    else if (p >= 1)
-//        p = 0.99;
 
     if (dblrand() < p) {
         if(!mark)
             return true;
         else
             markECN(packet);
-        //marked->record(1);
+
         if(simTime() >= recStart)
             emit(markingProbSignal, 1);
-        //markedSID->record((check_and_cast<IPv4Datagram*>(packet))->getSrcAddress().getInt());
     } else {
-            //marked->record(0);
             if(simTime() >= recStart)
                 emit(markingProbSignal, 0);
-            //markedNotSID->record((check_and_cast<IPv4Datagram*>(packet))->getSrcAddress().getInt());
     }
-
-
-//    if(avg >= maxth) {
-//        markECN(packet);
-//        if(simTime() >= recStart)
-//            emit(markingProbSignal, 1);
-//
-//    } else {
-//        if (dblrand() < p) {
-//            if(!mark)
-//                return true;
-//            else
-//                markECN(packet);
-//            //marked->record(1);
-//            if(simTime() >= recStart)
-//                emit(markingProbSignal, 1);
-//            //markedSID->record((check_and_cast<IPv4Datagram*>(packet))->getSrcAddress().getInt());
-//        } else {
-//                //marked->record(0);
-//                if(simTime() >= recStart)
-//                    emit(markingProbSignal, 0);
-//                //markedNotSID->record((check_and_cast<IPv4Datagram*>(packet))->getSrcAddress().getInt());
-//        }
-//    }
 
     return false;
 }

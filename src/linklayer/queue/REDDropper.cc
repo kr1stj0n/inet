@@ -131,28 +131,23 @@ bool REDDropper::shouldDrop(cPacket *packet)
     const double mark = marks[i];
     const int queueLength = getLength();
 
-    if (queueLength > 0)
-    {
+    if (queueLength > 0) {
         // TD: This following calculation is only useful when the queue is not empty!
         avg = (1 - wq) * avg + wq * queueLength;
-    }
-    else
-    {
+    } else {
         // TD: Added behaviour for empty queue.
         const double m = SIMTIME_DBL(simTime() - q_time) * pkrate;
         avg = pow(1 - wq, m) * avg;
     }
 
 
-    if (minth <= avg && avg < maxth)
-    {
+    if (minth <= avg && avg < maxth) {
         count[i]++;
         const double pb = maxp * (avg - minth) / (maxth - minth);
         double pa = pb / (1 - count[i] * pb); // TD: Adapted to work as in [Floyd93].
         if(1 - count[i] * pb < 0)
             pa = 1;
-        if (dblrand() < pa)
-        {
+        if (dblrand() < pa) {
             EV << "Random early packet drop (avg queue len=" << avg << ", pa=" << pb << ")\n";
             count[i] = 0;
             if(!mark)
@@ -165,9 +160,7 @@ bool REDDropper::shouldDrop(cPacket *packet)
             marked->record(0);
             markedNotSID->record((check_and_cast<IPv4Datagram*>(packet))->getSrcAddress().getInt());
         }
-    }
-    else if (avg >= maxth)
-    {
+    } else if (avg >= maxth) {
         EV << "Avg queue len " << avg << " >= maxth, dropping packet.\n";
         count[i] = 0;
         if(!mark)
@@ -176,9 +169,7 @@ bool REDDropper::shouldDrop(cPacket *packet)
             markECN(packet);
         marked->record(1);
         markedSID->record((check_and_cast<IPv4Datagram*>(packet))->getSrcAddress().getInt());
-    }
-    else if (queueLength >= maxth)  // maxth is also the "hard" limit
-    {
+    } else if (queueLength >= maxth) {  // maxth is also the "hard" limit
         EV << "Queue len " << queueLength << " >= maxth, dropping packet.\n";
         count[i] = 0;
         if(!mark)
@@ -187,9 +178,7 @@ bool REDDropper::shouldDrop(cPacket *packet)
             markECN(packet);
         marked->record(1);
         markedSID->record((check_and_cast<IPv4Datagram*>(packet))->getSrcAddress().getInt());
-    }
-    else
-    {
+    } else {
         count[i] = -1;
         marked->record(0);
         markedNotSID->record((check_and_cast<IPv4Datagram*>(packet))->getSrcAddress().getInt());

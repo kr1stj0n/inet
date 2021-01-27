@@ -43,3 +43,9 @@ backups
 xxx
 /3rdparty
 /tmp/
+
+# ignore tags file
+tags
+
+# ignore DS_Store in OSX
+.DS_Store
