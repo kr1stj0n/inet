@@ -35,31 +35,31 @@ typedef TCPTahoeRenoFamilyStateVariables TCPRenoStateVariables;
  */
 class INET_API LGCShQ : public TCPTahoeRenoFamily
 {
-  protected:
-    TCPRenoStateVariables *&state; // alias to TCLAlgorithm's 'state'
+        protected:
+                TCPRenoStateVariables *&state; // alias to TCLAlgorithm's 'state'
 
-    /** Create and return a TCPRenoStateVariables object. */
-    virtual TCPStateVariables *createStateVariables() {
-        return new TCPRenoStateVariables();
-    }
+                /** Create and return a TCPRenoStateVariables object. */
+                virtual TCPStateVariables *createStateVariables() {
+                        return new TCPRenoStateVariables();
+                }
 
-    /** Utility function to recalculate ssthresh */
-    virtual void recalculateSlowStartThreshold();
+                /** Utility function to recalculate ssthresh */
+                virtual void recalculateSlowStartThreshold();
 
-    /** Redefine what should happen on retransmission */
-    virtual void processRexmitTimer(TCPEventCode& event);
-    virtual void processPaceTimer(TCPEventCode& event);
-    virtual void processRateUpdateTimer(TCPEventCode& event);
+                /** Redefine what should happen on retransmission */
+                virtual void processRexmitTimer(TCPEventCode& event);
+                virtual void processPaceTimer(TCPEventCode& event);
+                virtual void processRateUpdateTimer(TCPEventCode& event);
 
-  public:
-    /** Ctor */
-    LGCShQ();
+        public:
+                /** Ctor */
+                LGCShQ();
 
-    /** Redefine what should happen when data got acked, to add congestion window management */
-    virtual void receivedDataAck(uint32 firstSeqAcked);
+                /** Redefine what should happen when data got acked, to add congestion window management */
+                virtual void receivedDataAck(uint32 firstSeqAcked);
 
-    /** Redefine what should happen when dupAck was received, to add congestion window management */
-    virtual void receivedDuplicateAck();
+                /** Redefine what should happen when dupAck was received, to add congestion window management */
+                virtual void receivedDuplicateAck();
 };
 
 #endif

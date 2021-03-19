@@ -43,7 +43,8 @@ void DCTCP::recalculateSlowStartThreshold()
 
     // set ssthresh to flight size / 2, but at least 2 SMSS
     // (the formula below practically amounts to ssthresh = cwnd / 2 most of the time)
-    uint32 flight_size = std::min(state->snd_cwnd, state->snd_wnd); // FIXME TODO - Does this formula computes the amount of outstanding data?
+    // FIXME TODO - Does this formula computes the amount of outstanding data?
+    uint32 flight_size = std::min(state->snd_cwnd, state->snd_wnd);
     // uint32 flight_size = state->snd_max - state->snd_una;
     state->ssthresh = std::max(flight_size / 2, 2 * state->snd_mss);
 

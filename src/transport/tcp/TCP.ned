@@ -219,14 +219,14 @@ simple TCP like ITCP
         bool lgccAggregated = default(false);
         bool lgccAdaptiveR = default(true);
         string lgccMethod = default("Primal");    // Primal / Dual1 / Dual2
-        double lgccPhi1 = default(10.0); // The log base - rate  
-        double lgccPhi2 = default(10.0); // The log base - cost 
-        double param1 = default(0.0); // ECNNUM=ecnnum_alpha,  
-        double param2 = default(0.0); // ECNNUM=ecnnum_phi,  
+        double lgccPhi1 = default(10.0); // The log base - rate
+        double lgccPhi2 = default(10.0); // The log base - cost
+        double param1 = default(0.0); // ECNNUM=ecnnum_alpha,
+        double param2 = default(0.0); // ECNNUM=ecnnum_phi,
         double param3 = default(0.0);
         double param4 = default(0.0);
         double param5 = default(0.0); // pushback drop probability
-        
+
         @display("i=block/wheelbarrow");
     gates:
         input appIn[] @labels(TCPCommand/down);
